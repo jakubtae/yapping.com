@@ -6,7 +6,12 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
- 
+
+enum RoleEnum {
+  ADMIN
+  USER
+}
+
 model User {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
@@ -17,7 +22,7 @@ model User {
   sessions      Session[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
- 
+ role RoleEnum
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
