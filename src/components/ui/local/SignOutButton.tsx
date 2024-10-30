@@ -20,10 +20,10 @@ const SignOutButton = ({ link }: SignOutButtonProps) => {
           {" "}
           <Image
             src={link}
-            width={32}
-            height={32}
+            width={40}
+            height={40}
             alt="Logo"
-            className="rounded-full"
+            className="rounded-full border-black border-[3px] p-0.5"
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent>

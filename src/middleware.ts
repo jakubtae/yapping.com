@@ -15,7 +15,9 @@ export default auth(async function middleware(req: NextRequest) {
   const { nextUrl } = req;
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+  const isPublicRoute = publicRoutes.some((route) =>
+    nextUrl.pathname.startsWith(route.replace("/*", ""))
+  );
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   if (isApiAuthRoute) {

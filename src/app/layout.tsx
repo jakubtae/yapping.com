@@ -33,12 +33,22 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-screen`}
       >
-        <nav className="flex w-full justify-between items-center p-4">
-          <Link href="/">
-            <Button variant="link">Home</Button>
-          </Link>
+        <nav className="flex w-full justify-between items-center p-1 sm:p-2 md:p-4">
+          <nav>
+            <Link href="/">
+              <Button variant="link">Home</Button>
+            </Link>
+            <Link href="/journal">
+              <Button variant="link">Journal</Button>
+            </Link>
+            {session?.user.role === "ADMIN" && (
+              <Link href="/admin">
+                <Button variant="link">Admin</Button>
+              </Link>
+            )}
+          </nav>
           {session ? (
             <>
               <SignOutButton link={session.user?.image || "null"} />
@@ -47,7 +57,7 @@ export default async function RootLayout({
             <LoginButon />
           )}
         </nav>
-        {children}
+        <div className="p-4 h-full bg-red-500">{children}</div>
       </body>
     </html>
   );
