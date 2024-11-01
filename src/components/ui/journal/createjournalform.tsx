@@ -31,9 +31,12 @@ const CreateJournalForm = () => {
   const form = useForm<z.infer<typeof PostsSchema>>({
     resolver: zodResolver(PostsSchema),
     defaultValues: {
+      id: "123",
       title: "",
       body: "",
       tags: [{ tagId: "1", text: "" }],
+      createdAt: new Date(Date.now()),
+      updatedAt: new Date(Date.now()),
     },
   });
 
@@ -44,12 +47,9 @@ const CreateJournalForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof PostsSchema>) => {
-    console.log("help");
-    alert("Help");
     setError(undefined);
     setSuccess(undefined);
     const id = session?.user.id as string;
-
     try {
       const data = await newPost(values, id);
       if (data.error) {
@@ -70,7 +70,13 @@ const CreateJournalForm = () => {
     <Card className="w-full max-w-[600px] shadow-none border-none py-10">
       <CardContent>
         <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={handleSubmit((vaues) => {
+              console.log("What");
+              onSubmit(vaues);
+            })}
+            className="space-y-6"
+          >
             <FormField
               control={control}
               name="title"

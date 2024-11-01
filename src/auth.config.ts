@@ -25,7 +25,9 @@ export default {
       return token;
     },
     session({ session, token }) {
+      if (!token.sub) return session;
       if (session.user) {
+        session.user.id = token.sub;
         session.user.role = token.role as "USER" | "ADMIN";
       }
       return session;
