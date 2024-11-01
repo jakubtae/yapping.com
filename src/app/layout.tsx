@@ -23,6 +23,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import LoginButon from "@/components/ui/local/LoginButton";
 import SignOutButton from "@/components/ui/local/SignOutButton";
+import AuthProvider from "@/context/AuthProvider";
 
 export default async function RootLayout({
   children,
@@ -57,7 +58,9 @@ export default async function RootLayout({
             <LoginButon />
           )}
         </nav>
-        <div className="p-4 h-full bg-red-500">{children}</div>
+        <AuthProvider>
+          <div className="p-4 h-full bg-red-50">{children}</div>
+        </AuthProvider>
       </body>
     </html>
   );
