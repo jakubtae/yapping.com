@@ -59,7 +59,7 @@ export default async function RootLayout({
           )}
         </nav>
         <AuthProvider>
-          <div className="p-4 h-full bg-red-50">{children}</div>
+          <div className="p-4 h-full">{children}</div>
         </AuthProvider>
       </body>
     </html>

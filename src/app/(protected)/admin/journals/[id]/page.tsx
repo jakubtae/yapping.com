@@ -1,44 +1,65 @@
-"use client";
-
-import { isValidObjectId } from "@/lib/isValidObjectId";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
-
-interface JournalIdParams {
-  params: {
-    id: string;
-  };
-}
-
-const LibraryIDPage = ({ params }: JournalIdParams) => {
-  const router = useRouter();
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.push("/auth/login");
-    },
-  });
-
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (!isValidObjectId(params.id)) {
-      router.push("/dashboard/libraries");
-    } else {
-      setLoading(false);
-    }
-  }, [params.id, router]); // Dodano zależności
-
-  if (loading || status === "loading") {
-    return <p>Loading...</p>;
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
+import { prisma } from "@/prisma";
+import { redirect } from "next/navigation";
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const slug = (await params).id;
+  const journalData = await prisma.posts.findFirst({ where: { id: slug } });
+  if (!journalData) {
+    redirect("/admin/journals/");
   }
-
   return (
-    <div>
-      {/* Dodaj tutaj komponenty, które mają być renderowane na tej stronie */}
+    <div className="flex flex-col gap-2 items-center">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/admin">Admin</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/admin/journals">Journals</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href={"/admin/journals/" + journalData.id}>
+              {journalData.title}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+        </BreadcrumbList>
+      </Breadcrumb>
+      <div className="flex flex-col justify-center items-center pt-4">
+        <h1 className="text-4xl font-bold">{journalData?.title}</h1>
+        <h2 className="text-sm font-semibold text-gray-700">
+          {" "}
+          {journalData.createdAt.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+          })}
+        </h2>
+        <div className="flex gap-2 pt-4">
+          {journalData.tags.map((tag, i) => (
+            <Button key={i} size="sm">
+              {tag}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      <div className="w-full text-base font-normal px-4 pt-2">
+        {journalData.body}
+      </div>
     </div>
   );
-};
-
-export default LibraryIDPage;
+}
